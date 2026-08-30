@@ -1,8 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel} from "@google/generative-ai";
 
 export default class AIService {
-    #genAi;
-    #model;
+    #genAi: GoogleGenerativeAI;
+    #model: GenerativeModel;
 
     constructor() {
         const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
