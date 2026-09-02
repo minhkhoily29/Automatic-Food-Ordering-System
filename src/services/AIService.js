@@ -12,30 +12,54 @@ export default class AIService {
 
         this.#genAi = new GoogleGenAI({apiKey});
     }
+
     /**
      * 
      * @param {string} userInput 
      * @param {array} validMenuItems 
-     * @returns {Promise<Array>}
+     * @param {function} onChunkReceived 
+     * @returns 
      */
-    async extractOrder(userInput, validMenuItems) {
+    async streamConversation(userInput, validMenuItems, onChunkReceived) {
         const menuString = validMenuItems.map(item => `-${item}`).join('\n');
-        const outputStream = await this.#genAi.models.generateContentStream({
+        const output = await this.#genAi.generateContentStream({
             model: 'gemini-3.6-flash',
             contents: userInput,
             config: {
                 systemInstruction: `
-                    You are a backend intent extraction engine for a food ordering system.
-                    Extract the food items, quantities, and the user's intended action.
-                    Also generate a friendly, natural confirmation message to the customer.
-                
-                    CRITICAL RULES:
-                    1. The 'action' key MUST be exactly one of these strings: "add", "remove", or "update".
-                    2. Only map requested items to the provided "Valid Menu Items" list.
-                    3. If the user asks for items not on the menu, asks a general question, or types nonsense:
-                       - Leave the 'orderItems' array completely empty.
-                       - Use the 'confirmationMessage' to politely reply, inform them the item is unavailable, or answer their question naturally.
+                    You are a friendly cashier at a restaurant. 
+                    Briefly confirm what the user just said in a natural, conversational tone.
+                    Do not list prices or ask complex questions. Keep it under 2 sentences.
 
+                    VALID MENU ITEMS :
+                    ${menuString}$
+                `
+            }
+        });
+
+        let completeResponse = '';
+        for await (const chunk of output) {
+            const text = chunk.text;
+            completeResponse += text;
+            if(onChunkReceived && text) {
+                onChunkReceived(text);
+            }
+        }
+        return completeResponse;
+    }
+
+    async extractOrder(userInput, validMenuItems) {
+        const menuString = validMenuItems.map(item => `-${item}`).join('\n');
+        const output = await this.#genAi.generateContent({
+            model: 'gemini-3.6-flash',
+            contents: userInput,
+            config: {
+                systemInstruction: `
+                    Extract the food items, quantities, and the user's intended action.
+                    The 'action' key MUST be exactly one of these strings: "add", "remove", or "update".
+                    Only map requested items to the provided "Valid Menu Items" list.
+                    If the user asks for items not on the menu, leave the array empty.
+                    
                     VALID MENU ITEMS:
                     ${menuString}
                 `,
@@ -43,37 +67,29 @@ export default class AIService {
                 responseSchema: {
                     type: "OBJECT",
                     properties: {
-                        confirmationMessage: {
-                            type: "STRING",
-                            description: "A friendly reply in response to what the customer just said"
-                        },
                         orderItems: {
                             type: "ARRAY",
                             items: {
                                 type: "OBJECT",
                                 properties: {
-                                    action: {
-                                        type: "STRING",
-                                        enum: ["add", "remove", "update"]
-                                    },
+                                    action: { type: "STRING", enum: ["add", "remove", "update"]},
                                     foodName: {type: "STRING"},
-                                    quantity: { type: "INTEGER"}
+                                    quantity: {type: "INTEGER"}
                                 },
                                 required: ["action", "foodName", "quantity"]
-                                }
                             }
-                        },
-                    required: ["confirmationMessage", "orderItems"]
+                        }
+                    },
+                    required: ["orderItems"]
                 }
             }
         });
-        if(response.text) {
-            return JSON.parse(response.text);
-        }
 
-        return { 
-            confirmationMessage: "I didn't quite catch that. Could you repeat your order?", 
-            orderItems: [] 
-        };
-    }
+        try {
+            return JSON.parse(response.text);
+        } catch(error) {
+            console.error("Failed to parse JSON", error);
+            return { orderItems: []};
+        }
+    } 
 }
