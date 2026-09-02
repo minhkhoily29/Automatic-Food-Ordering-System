@@ -6,16 +6,20 @@ import ItemNotFoundError from "../exceptions/ItemNotFoundError";
 export default class Cart {
     #items: Array<CartItem>;
     #listeners: Array<Listener>;
-
+    #totalPrice: number;
     constructor() {
         this.#items = new Array<CartItem>();
         this.#listeners = new Array<Listener>();
+        this.#totalPrice = 0;
         this.#invariant();
     }
 
     //getters
     get items(): Array<CartItem> {
         return this.#items;
+    }
+    get totalPrice(): number {
+        return this.#totalPrice;
     }
 
     /**
@@ -32,6 +36,7 @@ export default class Cart {
                 return;
             }
         });
+        this.#totalPrice += item.foodItem.price;
         this.#items.push(item);
         this.#invariant();
         this.#notifyAll();

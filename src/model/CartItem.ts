@@ -4,7 +4,6 @@ import FoodItem from "./FoodItem";
 export default class CartItem {
     #name: string;
     #quantity: number;
-    #modifications: Array<string>;
     #foodItem: FoodItem;
 
     /**
@@ -13,14 +12,12 @@ export default class CartItem {
      * @param {number} quantity - How many of that foodItem we want to convert 
      * @param {Array} modifications - Array of strings of the order modifications 
      */
-    constructor(foodItem: FoodItem, quantity: number, modifications: Array<string>) {
+    constructor(foodItem: FoodItem, quantity: number) {
         assert(foodItem instanceof FoodItem, "foodItem has to be an object");
         assert(quantity > 0, "Quantity has to be larger than 0");
-        assert(Array.isArray(modifications), "Modifications has to be an array");
         this.#name = foodItem.name;
         this.#quantity = quantity;
         this.#foodItem = foodItem;
-        this.#modifications = modifications;
         this.#invariant();
     }
 

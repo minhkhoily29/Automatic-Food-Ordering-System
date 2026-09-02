@@ -18,7 +18,7 @@ export default class AIService {
      * @param {string} userInput 
      * @param {array} validMenuItems 
      * @param {function} onChunkReceived 
-     * @returns 
+     * @returns Promise<string>
      */
     async streamConversation(userInput, validMenuItems, onChunkReceived) {
         const menuString = validMenuItems.map(item => `-${item}`).join('\n');
@@ -48,6 +48,12 @@ export default class AIService {
         return completeResponse;
     }
 
+    /**
+     * 
+     * @param {string} userInput 
+     * @param {array} validMenuItems 
+     * @returns Promise<Array>
+     */
     async extractOrder(userInput, validMenuItems) {
         const menuString = validMenuItems.map(item => `-${item}`).join('\n');
         const output = await this.#genAi.generateContent({
