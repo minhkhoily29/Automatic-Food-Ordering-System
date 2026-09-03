@@ -1,6 +1,5 @@
 import assert from "../Assertion";
 import Cart from "./Cart";
-import CartItem from "./CartItem";
 import OrderItem from "./OrderItem";
 
 export default class Order {

@@ -28,9 +28,6 @@ export default class CartItem {
     get quantity(): number {
         return this.#quantity;
     }
-    get modifications(): Array<string> {
-        return this.#modifications;
-    }
     get foodItem(): FoodItem {
         return this.#foodItem;
     }
@@ -48,9 +45,5 @@ export default class CartItem {
     #invariant() {
         assert(this.#name != null, "There's no foodItem");
         assert(this.#quantity > 0, "Quantity has to be larger than 0");
-        assert(this.#modifications != null, "Modification can't be null");
-        Array.from(this.#modifications).forEach(m => {
-            assert(m != null, "There can't be an empty modification");
-        });
     }
 }
