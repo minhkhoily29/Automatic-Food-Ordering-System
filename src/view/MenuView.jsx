@@ -1,31 +1,32 @@
-import Listener from "../model/Listener";
-import Category from "../model/Category";
+import { useState, useEffect } from 'react';
 
-export default class MenuView extends Listener {
-    #controller;
-    #menu;
-    #categories;
-    #divEl;
-    #htmlEl;
+export default function MenuView(menu, controller) {
+    const [categories, setFoodItems] = useState([]);
 
-    /**
-     * 
-     * @param {menu} menu - the menu object
-     * @param {array} categories - Array of all the categories in the menu  
-     * @param {controller} controller - the controller
-     */
-    constructor(menu, categories, controller) {
-        this.#controller = controller;
-        this.#menu = menu;
-        this.#categories = categories;
+    useEffect(() => {
+        setFoodItems([menu.categories]);
+    }, [menu]);
 
-        this.#menu.registerListener(this);
-        this.#htmlEl = document.querySelector<HTMLDivElement>("#root"); //change this later
-        this.notify();
-    }
+    return (
+        <div className="menu-container">
+            <h2>Restaurant Menu</h2>
 
-    notify() {
-        this.#divEl.replaceChildren();
-        //fill this in later
-    }
+            {categories.map((category, catIndex) => (
+                <div key={category.id || catIndex} className="category-section">
+                    <h3>{category.name}</h3>
+
+                    <ul>
+                        {category.items.map((item, itemIndex) => (
+                            <li key={item.id || itemIndex}>
+                                {item.name} - ${item.price}
+                                <button onClick={() => controller.addItemToCart(item)}>
+                                    Add
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    );
 }
