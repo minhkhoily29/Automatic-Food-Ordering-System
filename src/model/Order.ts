@@ -15,16 +15,13 @@ export default class Order {
         this.#orderItems = new Array<OrderItem>();
         assert(cart != null, "Cart can't be null");
         const cartItem = cart.items;
-        let totalPrice = 0;
         for(let i of cartItem) {
             const name = i.name;
             const quantity = i.quantity;
-            const mods = i.modifications;
-            const orderItem = new OrderItem(name, quantity, mods);
-            totalPrice += i.foodItem.price;
+            const orderItem = new OrderItem(name, quantity);
             this.#orderItems.push(orderItem);
         }
-        this.#totalPrice = totalPrice;
+        this.#totalPrice = cart.totalPrice;
         this.#invariant();
     }
 

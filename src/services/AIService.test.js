@@ -52,7 +52,7 @@ describe('AIService', () => {
         ];
         
         mockGenerateContent.mockResolvedValue({
-            text: JSON.stringify(mockApiResponse)
+            text: JSON.stringify({ orderItems: mockApiResponse })
         });
 
         const service = new AIService();
