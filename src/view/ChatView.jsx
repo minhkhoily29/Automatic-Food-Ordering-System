@@ -22,16 +22,8 @@ export default function ChatView(chat, controller) {
     }, [chat]);
 
     return (
-      <div style={{ 
-            padding: "20px", 
-            backgroundColor: "#f0f0f0", 
-            borderRadius: "8px",
-            marginBottom: "20px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px"
-        }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+      <div className="chatContainer">
+            <div className="chatMic">
                 <h3 style={{ margin: 0 }}>AI Assistant</h3>
                 
                 <button onClick={() => controller.startListening()}>
@@ -39,14 +31,7 @@ export default function ChatView(chat, controller) {
                 </button>
             </div>
             
-            <div style={{ 
-                minHeight: "60px", 
-                padding: "15px", 
-                backgroundColor: "#fff", 
-                border: "1px solid #ccc",
-                fontStyle: aiMessage ? "normal" : "italic",
-                color: aiMessage ? "#000" : "#888"
-            }}>
+            <div className="chatMessage">
                 {aiMessage || "Click the microphone and start speaking..."}
             </div>
         </div>  
