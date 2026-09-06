@@ -29,3 +29,4 @@ insert into fooditems (name, price, image, category) values
     ('Cheese Cake', 2, 'cake.jpg', 'Dessert'),
     ('Boba tea', 2.5, 'boba.jpg', "Drinks"),
     ('Cappucino', 2.5, 'coffee.jpg', "Drinks"),
+on conflict do nothing;
