@@ -2,9 +2,11 @@ import assert from "../Assertion";
 import DuplicateItemError from "../exceptions/DuplicateItemError";
 import FoodItem from "./FoodItem";
 import Listener from "./Listener";
+import db from "./Connection";
 
 export default class Category {
     #name: string;
+    #id: number;
     #foodList: Array<FoodItem>;
     #listeners: Array<Listener>;
 
@@ -12,10 +14,11 @@ export default class Category {
      * 
      * @param {string} name - name for the category 
      */
-    constructor(name: string) {
+    constructor(name: string, id: number) {
         assert(name != null, "Name can't be null");
         assert(name.length > 0, "Name can't  be empty");
         this.#name = name;
+        this.#id = id;
         this.#foodList = new Array<FoodItem>();
         this.#listeners = new Array<Listener>();
         this.#invariant();
@@ -28,6 +31,10 @@ export default class Category {
     get foodList(): Array<FoodItem> {
         return this.#foodList;
     }
+    get id(): number {
+        return this.#id;
+    }
+
 
     /**
      * 
@@ -49,6 +56,21 @@ export default class Category {
         this.#listeners.push(listener);
     }
     
+    static async getCategories(): Promise<Array<Category>> {
+        let result = await db().query<
+        {
+            id: number,
+            name: string
+        }
+        >('select id, name from categories');
+        let loadedCategories = new Array<Category>();
+        for (let row of result.rows) {
+            let category = new Category(row.name, row.id);
+            loadedCategories.push(category);
+        }
+        return loadedCategories;
+    }
+
     #notifyAll() {
         this.#listeners.forEach((l) => l.notify());
     }

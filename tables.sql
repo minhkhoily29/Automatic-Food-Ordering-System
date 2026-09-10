@@ -1,8 +1,10 @@
-create table if not exists category (
+create table if not exists categories (
+    id serial unique not null,
     name varchar(255) not null unique
 );
 
 create table if not exists fooditems (
+    id serial unique not null,
     name varchar(255) unique not null,
     price integer not null,
     image varchar(255) unique not null,
