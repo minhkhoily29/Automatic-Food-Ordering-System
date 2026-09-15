@@ -1,6 +1,7 @@
 import assert from "../Assertion";
 import DuplicateItemError from "../exceptions/DuplicateItemError";
 import Category from "./Category";
+import FoodItem from "./FoodItem";
 import Listener from "./Listener";
 
 export default class Menu {
@@ -34,8 +35,23 @@ export default class Menu {
         this.#notifyAll();
     }
 
+    find(foodName: string): FoodItem | undefined{
+        let item: FoodItem | undefined;
+        for(let c of this.#categories) {
+            item = c.foodList.find(f => f.name == foodName);
+            if(typeof item == "undefined") {
+                return item;
+            }
+        }
+        return item;
+    }
+
     registerListener(listener: Listener) {
         this.#listeners.push(listener);
+    }
+
+    unregisterListener(listener: Listener) {
+        this.#listeners = this.#listeners.filter(l => l !== listener);
     }
     
     #notifyAll() {

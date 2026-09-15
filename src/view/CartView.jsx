@@ -26,13 +26,13 @@ export default function CartView(cart, controller) {
             ) : (
                 <ul>
                     {cartItems.map((item, index) => (
-                        <li key={item.id || index} style={{ marginBottom: "10px" }}>
+                        <li key={item.id || index} className='CartItemBox'>
                             <span>
                                 {item.quantity}x {item.name}
                             </span>
                             <button 
                                 onClick={() => controller.removeItemFromCart(item)}
-                                style={{ marginLeft: "10px" }}
+                                className='RemoveButton'
                             >
                                 Remove
                             </button>

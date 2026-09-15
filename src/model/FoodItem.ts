@@ -62,6 +62,10 @@ export default class FoodItem {
     registerListener(listener: Listener) {
         this.#listeners.push(listener);
     }
+    unregisterListener(listener: Listener) {
+        this.#listeners = this.#listeners.filter(l => l !== listener);
+    }
+    
     
     static async getFoodItems(category: Category): Promise<Array<FoodItem>> {
         let result = await db().query<

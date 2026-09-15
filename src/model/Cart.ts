@@ -70,6 +70,11 @@ export default class Cart {
         this.#listeners.push(listener);
     }
 
+    unregisterListener(listener: Listener) {
+        this.#listeners = this.#listeners.filter(l => l !== listener);
+    }
+    
+
     #notifyAll() {
         Array.from(this.#listeners).forEach((l) => l.notify());
     }

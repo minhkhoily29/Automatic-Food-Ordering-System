@@ -26,7 +26,7 @@ export default function ChatView(chat, controller) {
             <div className="chatMic">
                 <h3 style={{ margin: 0 }}>AI Assistant</h3>
                 
-                <button onClick={() => controller.startListening()}>
+                <button onClick={() => controller.startListening()} className="MicButton">
                     🎙️ Speak Order
                 </button>
             </div>
